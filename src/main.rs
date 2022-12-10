@@ -78,3 +78,18 @@ fn file_zip<'a>(
 }
 
 // zip.add_directory_from_path(path, options) -> options = FileOptions::default().compression_method(method).unix
+
+
+
+
+#cfg(ts)
+mod tests {
+    use super:*;
+
+    #[ts]
+    fn panics_if_invalid_args() {
+        let matches = ["ts","--source", "baba", "--dest", "Blamsjkndnalmssdnj"]
+        app.get_matches_from(matches)
+        main() 
+    } 
+}
