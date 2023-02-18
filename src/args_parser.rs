@@ -1,8 +1,9 @@
 use clap::Parser;
+// use zip::ZipWriter;
 
 #[derive(Parser, Debug)]
 #[clap(author = "Baba Ali", version = "0.1.0", about = "Zippa CLI Tool")]
-pub struct ZippaArguments {
+pub struct ZippaArgs {
     #[clap(short = 's', long = "source")]
     pub source: String,
 
@@ -16,6 +17,12 @@ pub struct ZippaArguments {
     pub over_ride: bool,
 }
 
-pub fn zippa_args() -> ZippaArguments {
-    return ZippaArguments::parse();
+impl ZippaArgs {
+    pub fn new() -> ZippaArgs {
+        ZippaArgs::parse()
+    }
 }
+
+// pub fn zippa_args() -> Zippa {
+//     return Zippa::parse();
+// }

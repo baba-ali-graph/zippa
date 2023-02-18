@@ -1,7 +1,6 @@
 
 
-===========================================
-
+------------------------------------------------
 
 ```rs
 extern crate args_parser.rs
@@ -14,5 +13,27 @@ mod test {
         let matches = app.get_matches_from(args)
         assert_panic!()
     }
+}
+
+
+
+fn args are parsed correctly() {
+    let matches = app.get_matches_from([])
+    assert_eq(matches.a, a)
+    assert_eq(matches.b, b)
+}
+
+
+fn method_stuff() {
+    return aaa
+}
+
+fn right_file_is_generate() {
+
+}
+
+
+fn error_is_wrong() {
+    
 }
 ```
