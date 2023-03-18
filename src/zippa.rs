@@ -1,5 +1,6 @@
 use std::error::Error;
 use std::fs::File;
+use std::io::prelude::*;
 use std::io::{Read, Write};
 use std::path::Path;
 use zip::{result::ZipResult, write::FileOptions, CompressionMethod, ZipWriter};
@@ -49,11 +50,26 @@ impl Zippa {
     pub fn folder_zipping(
         &mut self,
         path: &Path,
+        base_path: &Path,
         method: CompressionMethod,
     ) -> Result<(), Box<dyn Error>> {
         let options = self.zipping_options(method);
         #[allow(deprecated)]
-        self.zip_writer.add_directory_from_path(path, options)?;
+        for item in std::fs::read_dir(&path)? {
+            let i_path = item?.path();
+            if i_path.is_dir() {
+                let item_path_string = i_path.to_str().unwrap();
+                println!("encountered another directory: {}", item_path_string);
+                self.folder_zipping(&i_path, &base_path, method)?;
+            } else {
+                let file = File::open(&path);
+                let rel_path = i_path.strip_prefix(&base_path).unwrap();
+                self.zip_writer
+                    .start_file(rel_path.to_str().unwrap(), options)?;
+                // std::io::copy(&mut file, &mut self.zip_writer);
+            }
+        }
+        // self.zip_writer.add_directory_from_path(path, options)?;
         Ok(())
     }
 

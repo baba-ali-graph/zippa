@@ -26,12 +26,12 @@ fn main() {
         });
 
     if src_path.is_file() {
-        match zippa.file_zipping(src_path, method) {
+        match zippa.file_zipping(&src_path, method) {
             Ok(res) => println!("File  zipped successfully"),
             Err(e) => eprintln!("Error: {}", e),
         }
     } else if src_path.is_dir() {
-        match zippa.folder_zipping(src_path, method) {
+        match zippa.folder_zipping(&src_path, &src_path, method) {
             Ok(res) => println!("Folder zipped successfully"),
             Err(e) => eprintln!("Error: {}", e),
         };
