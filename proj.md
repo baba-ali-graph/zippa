@@ -37,3 +37,21 @@ fn error_is_wrong() {
     
 }
 ```
+
+
+
+
+
+```rs
+// building a snake game with rust
+
+/**
+ * dependencies: rand & piston_window
+ * 
+ * */
+
+// Top level constant declaration
+const DIRECTION :f32 = 40.30
+
+
+```
