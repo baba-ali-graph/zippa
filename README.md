@@ -19,7 +19,7 @@ The source folder to zip
 The output zip file  
 
 `-c, --compression`    
-The compression algorithm to use. Can be `bzip2` (default), `gzip` or `zip`   
+The compression algorithm to use. Supported values are `bzip2` (default), `gzip` or `zip`   
 
 `-o, --override`     
 Override existing output file

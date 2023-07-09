@@ -61,4 +61,27 @@ fn error_is_wrong() {
 const DIRECTION :f32 = 40.30
 
 
+``
+
+
+------------------------------------------------------
+
+Can you help me generate a README.md file for my project. It is a terminal file/folder zipping application written in Rust. I want you to include standard sections found in the README of good open source projects. Using this snippet, I want you to use it to build the `usage section`:
+
+```rust
+
+pub struct ZippaArgs {
+    #[clap(short = 's', long = "source")]
+    pub source: String,
+
+    #[clap(short = 'd', long = "dest")]
+    pub dest: String,
+
+    #[clap(short = 'c', long = "compression", default_value = "bzip2")]
+    pub compression: String,
+
+    #[clap(short = 'o', long = "override", takes_value = false)]
+    pub over_ride: bool,
+}
+
 ```
