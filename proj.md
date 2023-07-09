@@ -28,7 +28,7 @@ fn method_stuff() {
     return aaa
 }
 
-fn right_file_is_generate() {
+fn right_file_is_generated() {
 
 }
 

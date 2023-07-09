@@ -1,9 +1,9 @@
-mod args_parser;
 mod errors;
+mod args_parser;
 mod zippa;
 
+use zippa::Zippa;
 use args_parser::ZippaArgs;
-use errors::ZippaError;
 use std::fs::File;
 use std::io::{Read, Write};
 use std::path::Path;
@@ -13,12 +13,12 @@ use zip::{
     CompressionMethod, ZipWriter,
 };
 
-use zippa::Zippa;
+
 
 fn main() {
     let args = ZippaArgs::new();
     let src_path = Path::new(&args.source);
-    let mut zippa = Zippa::new(&args.dest);
+    let mut zippa = Zippa::new(&args.dest).unwrap();
     let method = zippa
         .compression_method(&args.compression)
         .unwrap_or_else(|err| {
@@ -27,12 +27,12 @@ fn main() {
 
     if src_path.is_file() {
         match zippa.file_zipping(&src_path, method) {
-            Ok(res) => println!("File  zipped successfully"),
+            Ok(_) => println!("File  zipped successfully"),
             Err(e) => eprintln!("Error: {}", e),
         }
     } else if src_path.is_dir() {
         match zippa.folder_zipping(&src_path, &src_path, method) {
-            Ok(res) => println!("Folder zipped successfully"),
+            Ok(_) => println!("Folder zipped successfully"),
             Err(e) => eprintln!("Error: {}", e),
         };
     } else {

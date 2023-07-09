@@ -1,23 +1,24 @@
+use crate::errors::ZippaError;
 use std::error::Error;
 use std::fs::File;
 use std::io::prelude::*;
-use std::io::{Read, Write};
-use std::path::Path;
+use std::io::{self, Read, Write};
+use std::path::{Path, PathBuf};
 use zip::{result::ZipResult, write::FileOptions, CompressionMethod, ZipWriter};
 
-use crate::errors::ZippaError;
 pub struct Zippa {
-    dest_file: File,
-    zip_writer: ZipWriter<File>,
+    pub dest_file: File,
+    pub zip_writer: ZipWriter<File>,
 }
 
 impl Zippa {
-    pub fn new(dest_file_path: &str) -> Zippa {
-        let dest_file = File::create(Path::new(dest_file_path)).unwrap();
-        Zippa {
-            dest_file: dest_file.try_clone().unwrap(),
-            zip_writer: ZipWriter::new(dest_file),
-        }
+    pub fn new(dest_file_path: &str) -> Result<Self, io::Error> {
+        let dest_file = File::create(Path::new(dest_file_path))?;
+        let zip_writer = ZipWriter::new(dest_file.try_clone()?);
+        Ok(Zippa {
+            dest_file,
+            zip_writer,
+        })
     }
 
     pub fn file_zipping(
@@ -32,21 +33,21 @@ impl Zippa {
         let options = self.zipping_options(method);
         let mut buf: Vec<u8> = Vec::new();
         let mut file = File::open(&file_path)?;
-        #[allow(deprecated)]
-        self.zip_writer.start_file_from_path(file_path, options)?;
+        self.zip_writer.start_file(file_path.to_string_lossy().into_owned(), options)?;
         file.read_to_end(&mut buf)?;
         self.zip_writer
             .write_all(&*buf)
-            .map_err(|e| format!("An error occured while zipping: {}", e))?;
+            .map_err(|e| format!("An error occurred while zipping: {}", e))?;
         println!("Done, {} zipped successfully", in_path.display());
         Ok(())
     }
 
     pub fn zipping_options(&self, method: CompressionMethod) -> FileOptions {
-        return FileOptions::default()
+        FileOptions::default()
             .compression_method(method)
-            .unix_permissions(0o755);
+            .unix_permissions(0o755)
     }
+
     pub fn folder_zipping(
         &mut self,
         path: &Path,
@@ -54,31 +55,32 @@ impl Zippa {
         method: CompressionMethod,
     ) -> Result<(), Box<dyn Error>> {
         let options = self.zipping_options(method);
-        #[allow(deprecated)]
         for item in std::fs::read_dir(&path)? {
             let i_path = item?.path();
             if i_path.is_dir() {
-                let item_path_string = i_path.to_str().unwrap();
-                println!("encountered another directory: {}", item_path_string);
-                self.folder_zipping(&i_path, &base_path, method)?;
+                self.folder_zipping(&i_path, base_path, method)?;
             } else {
-                let file = File::open(&path);
-                let rel_path = i_path.strip_prefix(&base_path).unwrap();
+                let file_path = i_path.strip_prefix(&base_path)?;
+                let mut file = File::open(&i_path)?;
                 self.zip_writer
-                    .start_file(rel_path.to_str().unwrap(), options)?;
-                // std::io::copy(&mut file, &mut self.zip_writer);
+                    .start_file(file_path.to_string_lossy().into_owned(), options)?;
+                io::copy(&mut file, &mut self.zip_writer)?;
             }
         }
-        // self.zip_writer.add_directory_from_path(path, options)?;
         Ok(())
     }
 
     pub fn compression_method(&self, method: &str) -> Result<CompressionMethod, ZippaError> {
         match method {
-            "bzip2" => return Ok(CompressionMethod::Bzip2),
-            "deflated" => return Ok(CompressionMethod::Deflated),
-            "zstd" => return Ok(CompressionMethod::Zstd),
-            _ => return Err(ZippaError::InvalidCompressionMethod),
+            "bzip2" => Ok(CompressionMethod::Bzip2),
+            "deflated" => Ok(CompressionMethod::Deflated),
+            "zstd" => Ok(CompressionMethod::Zstd),
+            _ => Err(ZippaError::InvalidCompressionMethod),
         }
     }
+
+    pub fn is_compression_method_supported(&self, method: &str) -> bool {
+        self.compression_method(method).is_ok()
+    }
+    
 }

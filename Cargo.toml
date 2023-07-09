@@ -8,3 +8,5 @@ exclude = ["*.zip", "sample/*"]
 [dependencies]
 clap = {version = "3.1.6", features = ["derive"]}
 zip = "0.6.3"
+tempfile = "3.2.0"
+
