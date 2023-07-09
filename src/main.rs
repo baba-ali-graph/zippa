@@ -4,14 +4,10 @@ mod zippa;
 
 use zippa::Zippa;
 use args_parser::ZippaArgs;
-use std::fs::File;
-use std::io::{Read, Write};
+
+
 use std::path::Path;
-use zip::{
-    result::{ZipError, ZipResult},
-    write::FileOptions,
-    CompressionMethod, ZipWriter,
-};
+
 
 
 
@@ -21,7 +17,7 @@ fn main() {
     let mut zippa = Zippa::new(&args.dest).unwrap();
     let method = zippa
         .compression_method(&args.compression)
-        .unwrap_or_else(|err| {
+        .unwrap_or_else(|_err| {
             panic!("Invalid compression method received, exiting...");
         });
 
@@ -48,7 +44,7 @@ mod tests {
     fn arguments_are_parsed_correctly() {
         let source = "baba";
         let dest = "temp";
-        let matches = ["ts", "--source", source, "--dest", dest];
+        let _matches = ["ts", "--source", source, "--dest", dest];
         let app = ZippaArgs {
             source: String::from(source),
             dest: String::from(dest),

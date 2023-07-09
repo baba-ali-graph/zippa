@@ -1,10 +1,10 @@
 use crate::errors::ZippaError;
 use std::error::Error;
 use std::fs::File;
-use std::io::prelude::*;
+
 use std::io::{self, Read, Write};
-use std::path::{Path, PathBuf};
-use zip::{result::ZipResult, write::FileOptions, CompressionMethod, ZipWriter};
+use std::path::{Path};
+use zip::{write::FileOptions, CompressionMethod, ZipWriter};
 
 pub struct Zippa {
     pub dest_file: File,
