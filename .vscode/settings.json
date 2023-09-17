@@ -1,8 +1,4 @@
 {
-    "editor.defaultFormatter":"rust-lang.rust",
+    "editor.defaultFormatter":"rust-lang.rust-analyzer",
     "editor.formatOnSave": true,
-    "rust-analyzer.linkedProjects": [
-        "./zippa_core/Cargo.toml",
-        "./zippa_core/Cargo.toml"
-    ]
 }

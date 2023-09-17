@@ -1,10 +1,11 @@
 use crate::errors::ZippaError;
 use std::error::Error;
+use std::fs;
 use std::fs::File;
 
 use std::io::{self, Read, Write};
-use std::path::{Path};
-use zip::{write::FileOptions, CompressionMethod, ZipWriter};
+use std::path::{Path, PathBuf};
+use zip::{write::FileOptions, CompressionMethod, ZipArchive, ZipWriter};
 
 pub struct Zippa {
     pub dest_file: File,
@@ -33,7 +34,8 @@ impl Zippa {
         let options = self.zipping_options(method);
         let mut buf: Vec<u8> = Vec::new();
         let mut file = File::open(&file_path)?;
-        self.zip_writer.start_file(file_path.to_string_lossy().into_owned(), options)?;
+        self.zip_writer
+            .start_file(file_path.to_string_lossy().into_owned(), options)?;
         file.read_to_end(&mut buf)?;
         self.zip_writer
             .write_all(&*buf)
@@ -82,5 +84,25 @@ impl Zippa {
     pub fn is_compression_method_supported(&self, method: &str) -> bool {
         self.compression_method(method).is_ok()
     }
-    
+    pub fn unzip_archive(file_path: &str) -> io::Result<()> {
+        let file = File::open(file_path)?;
+        let mut archive = ZipArchive::new(file)?;
+
+        for i in 0..archive.len() {
+            let mut curr_file = archive.by_index(i)?;
+            let f_name = curr_file.name();
+            let output_path = PathBuf::from(&f_name);
+
+            if curr_file.is_dir() {
+                fs::create_dir_all(&output_path)?;
+            } else {
+                if let Some(parent) = output_path.parent() {
+                    fs::create_dir_all(&parent)?;
+                }
+                let mut output_file = File::create(&output_path)?;
+                io::copy(&mut curr_file, &mut output_file)?;
+            }
+        }
+        Ok(())
+    }
 }

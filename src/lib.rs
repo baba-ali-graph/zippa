@@ -1,4 +1,3 @@
-mod errors;
 mod args_parser;
-mod zippa;
-
+mod errors;
+mod zippa_core;

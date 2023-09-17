@@ -1,9 +1,9 @@
-use zippa::Zippa;
+mod args_parser;
+mod zippa_core;
+
 use args_parser::ZippaArgs;
 use std::path::Path;
-
-
-
+use zippa_core::Zippa;
 
 fn main() {
     let args = ZippaArgs::new();
