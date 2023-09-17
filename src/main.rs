@@ -1,11 +1,5 @@
-mod errors;
-mod args_parser;
-mod zippa;
-
 use zippa::Zippa;
 use args_parser::ZippaArgs;
-
-
 use std::path::Path;
 
 

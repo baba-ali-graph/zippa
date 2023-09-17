@@ -23,6 +23,3 @@ impl ZippaArgs {
     }
 }
 
-// pub fn zippa_args() -> Zippa {
-//     return Zippa::parse();
-// }

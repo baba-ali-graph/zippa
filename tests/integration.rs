@@ -1,9 +1,9 @@
+extern crate zippa;
 
 use std::fs::{self, File};
 use std::path::Path;
 use zip::CompressionMethod;
 use std::io::{Write, Read};
-use zippa::Zippa;
 use tempfile::{tempdir, NamedTempFile};
 
     #[test]
