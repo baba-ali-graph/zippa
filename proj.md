@@ -1,9 +1,34 @@
+## Zippa Stuffs
+
+```rs
+// Bulding the application:
+// cargo build --release --target=x86_64-unknown-linux-gnu --target=x86_64-apple-darwin --target=x86_64-pc-windows-msvc
+
+
+// ITEMS REMAINING
+// unzipping with args
+// zipping, unzipping tests
+
+// Documentation updates
+// Extra checking for destination as a folder
+
+// zippa args parsing
+
+// unzipping 
+// zippa unzap -s file.bmp
+// zippa unzap -s folder -d ../home-wretch
+
+
+
+
+```
+
+
 
 
 
 --------BUILDING SCRIPT---------------------
 ```sh
-cargo build --release --target=x86_64-unknown-linux-gnu --target=x86_64-apple-darwin --target=x86_64-pc-windows-msvc
 ```
 
 

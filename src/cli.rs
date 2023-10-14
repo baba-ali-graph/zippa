@@ -1,11 +1,10 @@
 use clap::{self, Parser};
-// use zip::ZipWriter;
 
 #[derive(Parser, Debug)]
 #[clap(author = "Baba Ali", version = "0.1.0", about = "Zippa CLI Tool")]
-pub enum ZippaApp {
+pub enum SubCommand {
     #[clap(about = "Zipping files and folders")]
-    ZipAction {
+    Zap {
         #[clap(short = 's', long = "source")]
         source: String,
 
@@ -17,12 +16,20 @@ pub enum ZippaApp {
 
         #[clap(short = 'o', long = "override", takes_value = false)]
         over_ride: bool,
-    }, // #[clap(about = "Unzipping files and folders")]
-       // UnzipAction
+    },
+    // #[clap(about = "Unzipping files and folders")]
+    // UnzipAction
 }
 
-impl ZippaApp {
-    pub fn new() -> ZippaApp {
-        ZippaApp::parse()
+#[derive(Parser, Debug)]
+#[clap(author = "Baba Ali", version = "0.1.0", about = "Zippa CLI Tool")]
+pub struct Cli {
+    #[clap(subcommand)]
+    pub sub_command: SubCommand,
+}
+
+impl Cli {
+    pub fn new() -> Cli {
+        Cli::parse()
     }
 }

@@ -1,29 +1,38 @@
 use std::path::Path;
+use zippa::cli::{Cli, SubCommand};
 use zippa::core::Zippa;
-use zippa::zippa_app::ZippaApp;
 
 fn main() {
-    let args = ZippaApp::new();
-    let src_path = Path::new(&args.source);
-    let mut zippa = Zippa::new(&args.dest).unwrap();
-    let method = zippa
-        .compression_method(&args.compression)
-        .unwrap_or_else(|_err| {
-            panic!("Invalid compression method received, exiting...");
-        });
+    let cli = Cli::new();
 
-    if src_path.is_file() {
-        match zippa.file_zipping(&src_path, method) {
-            Ok(_) => println!("File  zipped successfully"),
-            Err(e) => eprintln!("Error: {}", e),
+    if let SubCommand::Zap {
+        source,
+        dest,
+        compression,
+        over_ride,
+    } = cli.sub_command
+    {
+        let src_path = Path::new(&source);
+        let mut zippa = Zippa::new(&dest).unwrap();
+        let method = zippa
+            .compression_method(&compression)
+            .unwrap_or_else(|_err| {
+                panic!("Invalid compression method received, exiting...");
+            });
+
+        if src_path.is_file() {
+            match zippa.file_zipping(&src_path, method) {
+                Ok(_) => println!("File  zipped successfully"),
+                Err(e) => eprintln!("Error: {}", e),
+            }
+        } else if src_path.is_dir() {
+            match zippa.folder_zipping(&src_path, &src_path, method) {
+                Ok(_) => println!("Folder zipped successfully"),
+                Err(e) => eprintln!("Error: {}", e),
+            };
+        } else {
+            println!("Unknown source type!!")
         }
-    } else if src_path.is_dir() {
-        match zippa.folder_zipping(&src_path, &src_path, method) {
-            Ok(_) => println!("Folder zipped successfully"),
-            Err(e) => eprintln!("Error: {}", e),
-        };
-    } else {
-        println!("Unknown source type!!")
     }
 }
 
@@ -36,13 +45,28 @@ mod tests {
         let source = "baba";
         let dest = "temp";
         let _matches = ["ts", "--source", source, "--dest", dest];
-        let app = ZippaApp {
+        let sub_command = SubCommand::Zap {
             source: String::from(source),
             dest: String::from(dest),
             compression: String::from(source),
             over_ride: false,
         };
+        let cli = Cli {
+            sub_command: sub_command,
+        };
 
-        assert_eq!(app.source, source);
+        let mut is_same = false;
+
+        if let SubCommand::Zap {
+            source,
+            dest,
+            compression,
+            over_ride,
+        } = cli.sub_command
+        {
+            is_same = source == source;
+        }
+
+        assert_eq!(is_same, true);
     }
 }
