@@ -1,9 +1,9 @@
 use std::path::Path;
-use zippa::args_parser::ZippaArgs;
-use zippa::zippa_core::Zippa;
+use zippa::core::Zippa;
+use zippa::zippa_app::ZippaApp;
 
 fn main() {
-    let args = ZippaArgs::new();
+    let args = ZippaApp::new();
     let src_path = Path::new(&args.source);
     let mut zippa = Zippa::new(&args.dest).unwrap();
     let method = zippa
@@ -36,7 +36,7 @@ mod tests {
         let source = "baba";
         let dest = "temp";
         let _matches = ["ts", "--source", source, "--dest", dest];
-        let app = ZippaArgs {
+        let app = ZippaApp {
             source: String::from(source),
             dest: String::from(dest),
             compression: String::from(source),

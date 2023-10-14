@@ -1,3 +1,3 @@
-pub mod args_parser;
+pub mod core;
 pub mod errors;
-pub mod zippa_core;
+pub mod zippa_app;

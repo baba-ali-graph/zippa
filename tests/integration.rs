@@ -3,7 +3,7 @@ use std::io::{Read, Write};
 use std::path::Path;
 use tempfile::{tempdir, NamedTempFile};
 use zip::CompressionMethod;
-use zippa::zippa_core::Zippa;
+use zippa::core::Zippa;
 
 #[test]
 fn test_new_zippa_instance() {
