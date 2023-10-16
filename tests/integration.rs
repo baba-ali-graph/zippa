@@ -3,14 +3,14 @@ use std::io::{Read, Write};
 use std::path::Path;
 use tempfile::{tempdir, NamedTempFile};
 use zip::CompressionMethod;
-use zippa::core::Zippa;
+use zippa::zippa::Zippa;
 
 #[test]
 fn test_new_zippa_instance() {
     let temp_zip_file = NamedTempFile::new().unwrap();
     let zippa_result = Zippa::new(temp_zip_file.path().to_str().unwrap());
     if let Ok(zippa) = zippa_result {
-        assert!(zippa.dest_file.metadata().is_ok());
+        assert!(zippa.dest_path.metadata().is_ok());
         assert!(zippa.is_compression_method_supported("bzip2"));
     }
 }
@@ -20,7 +20,7 @@ fn test_new_zippa_instance_with_invalid_file_path() {
     let invalid_path = "/this/path/does/not/exist.zip";
     let zippa_result = Zippa::new(invalid_path);
     if let Ok(zippa) = zippa_result {
-        assert!(zippa.dest_file.metadata().is_err());
+        assert!(zippa.dest_path.metadata().is_err());
     }
 }
 

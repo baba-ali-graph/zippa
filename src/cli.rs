@@ -15,10 +15,20 @@ pub enum SubCommand {
         compression: String,
 
         #[clap(short = 'o', long = "override", takes_value = false)]
-        over_ride: bool,
+        overwrite: bool,
     },
-    // #[clap(about = "Unzipping files and folders")]
-    // UnzipAction
+
+    #[clap(about = "Unzipping files and folders")]
+    Unzap {
+        #[clap(short = 's', long = "source")]
+        source: String,
+
+        #[clap(short = 'd', long = "dest")]
+        dest: String,
+
+        #[clap(short = 'o', long = "override", takes_value = false)]
+        overwrite: bool,
+    },
 }
 
 #[derive(Parser, Debug)]

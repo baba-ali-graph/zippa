@@ -8,16 +8,17 @@ use std::path::{Path, PathBuf};
 use zip::{write::FileOptions, CompressionMethod, ZipArchive, ZipWriter};
 
 pub struct Zippa {
-    pub dest_file: File,
+    pub dest_path: PathBuf,
     pub zip_writer: ZipWriter<File>,
 }
 
 impl Zippa {
     pub fn new(dest_file_path: &str) -> Result<Self, io::Error> {
-        let dest_file = File::create(Path::new(dest_file_path))?;
+        let dest_path = PathBuf::from(dest_file_path);
+        let dest_file = File::create(&dest_path)?;
         let zip_writer = ZipWriter::new(dest_file.try_clone()?);
         Ok(Zippa {
-            dest_file,
+            dest_path,
             zip_writer,
         })
     }
@@ -30,6 +31,10 @@ impl Zippa {
         if !in_path.exists() {
             panic!("No file/folder found at specified path");
         }
+        if self.dest_path.is_dir() {
+            panic!("Expected destination path as an archive file")
+        }
+
         let file_path = Path::new(in_path);
         let options = self.zipping_options(method);
         let mut buf: Vec<u8> = Vec::new();
@@ -56,6 +61,9 @@ impl Zippa {
         base_path: &Path,
         method: CompressionMethod,
     ) -> Result<(), Box<dyn Error>> {
+        if self.dest_path.is_dir() {
+            panic!("Expected destination path as an archive file")
+        }
         let options = self.zipping_options(method);
         for item in std::fs::read_dir(&path)? {
             let i_path = item?.path();
@@ -84,7 +92,7 @@ impl Zippa {
     pub fn is_compression_method_supported(&self, method: &str) -> bool {
         self.compression_method(method).is_ok()
     }
-    pub fn unzip_archive(file_path: &str) -> io::Result<()> {
+    pub fn unzip_archive(&self, file_path: &str) -> io::Result<()> {
         let file = File::open(file_path)?;
         let mut archive = ZipArchive::new(file)?;
 
