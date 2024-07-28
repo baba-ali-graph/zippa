@@ -1,7 +1,7 @@
 use std::path::Path;
 use zippa::cli::{Cli, SubCommand};
+use zippa::messages::get_zipping_message;
 use zippa::zippa::Zippa;
-
 fn main() {
     let cli = Cli::new();
 
@@ -10,7 +10,7 @@ fn main() {
             source,
             dest,
             compression,
-            overwrite,
+            overwrite: _,
         } => {
             let src_path = Path::new(&source);
             let mut zippa = Zippa::new(&dest).unwrap();
@@ -20,6 +20,13 @@ fn main() {
                     panic!("Invalid compression method received, exiting...");
                 });
 
+            println!(
+                "{}",
+                get_zipping_message(
+                    src_path.to_str().unwrap_or_default(),
+                    zippa.dest_path.to_str().unwrap_or_default()
+                )
+            );
             if src_path.is_file() {
                 match zippa.file_zipping(&src_path, method) {
                     Ok(_) => println!("File  zipped successfully"),
@@ -37,9 +44,9 @@ fn main() {
         SubCommand::Unzap {
             source,
             dest,
-            overwrite,
+            overwrite: _,
         } => {
-            let mut zippa = Zippa::new(&dest).unwrap();
+            let zippa = Zippa::new(&dest).unwrap();
             match zippa.unzip_archive(&source) {
                 Ok(()) => println!("Archive unzipped successfully"),
                 Err(e) => eprint!("An error occured while unzipping: {:?}", e),
@@ -59,7 +66,7 @@ mod tests {
         let _matches = ["ts", "--source", source, "--dest", dest];
         let sub_command = SubCommand::Zap {
             source: String::from(source),
-            dest: String::from(dest),
+            dest: Some(String::from(dest)),
             compression: String::from(source),
             overwrite: false,
         };

@@ -13,8 +13,13 @@ pub struct Zippa {
 }
 
 impl Zippa {
-    pub fn new(dest_file_path: &str) -> Result<Self, io::Error> {
-        let dest_path = PathBuf::from(dest_file_path);
+    pub fn new(dest_file_path: &Option<String>) -> Result<Self, io::Error> {
+        let dest_path: PathBuf;
+        if let Some(dest_string) = dest_file_path {
+            dest_path = PathBuf::from(dest_string);
+        } else {
+            dest_path = PathBuf::from("./output.zip");
+        }
         let dest_file = File::create(&dest_path)?;
         let zip_writer = ZipWriter::new(dest_file.try_clone()?);
         Ok(Zippa {
@@ -92,6 +97,7 @@ impl Zippa {
     pub fn is_compression_method_supported(&self, method: &str) -> bool {
         self.compression_method(method).is_ok()
     }
+
     pub fn unzip_archive(&self, file_path: &str) -> io::Result<()> {
         let file = File::open(file_path)?;
         let mut archive = ZipArchive::new(file)?;

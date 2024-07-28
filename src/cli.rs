@@ -8,8 +8,8 @@ pub enum SubCommand {
         #[clap(short = 's', long = "source")]
         source: String,
 
-        #[clap(short = 'd', long = "dest")]
-        dest: String,
+        #[clap(short = 'd', long = "dest", required = false)]
+        dest: Option<String>,
 
         #[clap(short = 'c', long = "compression", default_value = "bzip2")]
         compression: String,
@@ -23,8 +23,8 @@ pub enum SubCommand {
         #[clap(short = 's', long = "source")]
         source: String,
 
-        #[clap(short = 'd', long = "dest")]
-        dest: String,
+        #[clap(short = 'd', long = "dest", required = false)]
+        dest: Option<String>,
 
         #[clap(short = 'o', long = "override", takes_value = false)]
         overwrite: bool,
