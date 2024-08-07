@@ -1,4 +1,3 @@
-Here is a suggested README.md file for your Rust terminal zipping application:
 
 # Zippa
 
